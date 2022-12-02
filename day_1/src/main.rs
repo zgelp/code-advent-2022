@@ -3,6 +3,7 @@ use std::io::{self, BufRead};
 use std::path::Path;
 use std::error::Error;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 struct Elf {
     pub id: usize,
