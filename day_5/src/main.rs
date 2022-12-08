@@ -41,18 +41,30 @@ fn main() -> Result<(), Box<dyn Error>>{
         .has_headers(false)
         .from_reader(string_from_vec.as_bytes());
 
-    let mut prepared_data: HashMap<usize, Vec<String>> = HashMap::with_capacity(10);
+    let mut csv_data: HashMap<usize, Vec<String>> = HashMap::with_capacity(10);
     
     for result in rdr.records() {
         let record = result.unwrap();
         for i in 0..9 {
             let one_char = record[i].to_owned();
-            if prepared_data.contains_key(&i) {
-                let v = prepared_data.get_mut(&i).unwrap();
+            if csv_data.contains_key(&i) {
+                let v = csv_data.get_mut(&i).unwrap();
                 v.push(one_char);
             } else {
-            prepared_data.insert(i, vec![one_char]); }
+                csv_data.insert(i, vec![one_char]); }
         }
+    }
+
+    let mut prepared_data: HashMap<usize, Vec<String>> = HashMap::new();
+    for (i, vec) in csv_data.iter() {
+        let reversed_vec: Vec<String> = vec.iter().rev().filter_map(|s| {
+            if s.is_empty() {
+                None
+            } else {
+                Some(s.to_string())
+            }
+        }).collect();
+        prepared_data.insert(*i, reversed_vec);
     }
 
     println!("{:?}", prepared_data);
