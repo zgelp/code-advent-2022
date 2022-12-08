@@ -3,14 +3,14 @@ use std::path::Path;
 use std::io::Read;
 
 
-fn first_part(arr: &Vec<Vec<u32>>) -> bool {
+fn first_part(arr: &[Vec<u32>]) -> bool {
     let first_contains = arr[0].iter().all(|x| arr[1].contains(x));
     let second_contains = arr[1].iter().all(|x| arr[0].contains(x));
 
     first_contains || second_contains
 }
 
-fn second_part(arr: &Vec<Vec<u32>>) -> bool {
+fn second_part(arr: &[Vec<u32>]) -> bool {
     let result = arr[0]
     .iter()
     .any(|x| arr[1].contains(x));
@@ -24,7 +24,7 @@ fn parse_data(lines: Vec<&str>) {
 
     for line in lines {
         let splited_line = line.split(',').collect::<Vec<&str>>();
-        let mut arr : Vec<Vec<u32>>= Vec::new();
+        let mut arr: Vec<Vec<u32>>= Vec::new();
         for one_part in splited_line {
             let splitted_into_int = one_part.split('-').collect::<Vec<&str>>();
             let first_int: u32 = splitted_into_int[0].parse().unwrap();
