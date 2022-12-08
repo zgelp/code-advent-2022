@@ -3,15 +3,25 @@ use std::path::Path;
 use std::io::Read;
 
 
-fn check_arrays(arr: Vec<Vec<u32>>) -> bool {
+fn first_part(arr: &Vec<Vec<u32>>) -> bool {
     let first_contains = arr[0].iter().all(|x| arr[1].contains(x));
     let second_contains = arr[1].iter().all(|x| arr[0].contains(x));
 
     first_contains || second_contains
 }
 
+fn second_part(arr: &Vec<Vec<u32>>) -> bool {
+    let result = arr[0]
+    .iter()
+    .any(|x| arr[1].contains(x));
+
+    result
+}
+
 fn parse_data(lines: Vec<&str>) {
     let mut score: u32 = 0;
+    let mut score2: u32 = 0;
+
     for line in lines {
         let splited_line = line.split(',').collect::<Vec<&str>>();
         let mut arr : Vec<Vec<u32>>= Vec::new();
@@ -22,10 +32,13 @@ fn parse_data(lines: Vec<&str>) {
             let array_with_range: Vec<u32> = (first_int..=second_int).collect();
             arr.push(array_with_range);            
         }
-        ;
-        score += u32::from(check_arrays(arr));
+        score += u32::from(first_part(&arr));
+        score2 += u32::from(second_part(&arr));
+
     }
     println!("Frist part score: {:?}", score);
+    println!("Second part score: {:?}", score2);
+
 }
 
 fn main() {
