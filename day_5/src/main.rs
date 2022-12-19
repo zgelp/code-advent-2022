@@ -46,20 +46,36 @@ fn prepare_instructions(instructions: Vec<&str>) -> Vec<(usize,usize,usize)>{
         .map(|words| (words[1].parse::<usize>().unwrap(), words[3].parse::<usize>().unwrap(), words[5].parse::<usize>().unwrap())).collect()
 }
 
-fn arrange_supply(instructions: Vec<(usize, usize, usize)>, mut supply: HashMap<usize, Vec<String>>)  {
+fn arrange_supply_first_part(instructions: Vec<(usize, usize, usize)>, mut supply: HashMap<usize, Vec<String>>)  {
     for instruction in instructions {
         // Take first vector from hashmap (based on instruction id)
         let first_vec = supply.get_mut(&instruction.1).unwrap();
         // Take items from that vector and reverse
         let mut vec_elements: Vec<String> = first_vec.drain(first_vec.len() - instruction.0..).collect();
+        // Only difference between first / second part
         vec_elements.reverse();
-
         // Update second vector based on ID
         let second_vec = supply.get_mut(&instruction.2).unwrap();
         second_vec.extend(vec_elements);
     }
 
     println!("Solution First Part: ");
+    for (k, v) in supply.iter().sorted_by_key(|x| x.0) {
+        println!("{:?} => {:?}", k, v);
+    }
+}
+fn arrange_supply_second_part(instructions: Vec<(usize, usize, usize)>, mut supply: HashMap<usize, Vec<String>>)  {
+    for instruction in instructions {
+        // Take first vector from hashmap (based on instruction id)
+        let first_vec = supply.get_mut(&instruction.1).unwrap();
+        // Take items from that vector
+        let vec_elements: Vec<String> = first_vec.drain(first_vec.len() - instruction.0..).collect();
+        // Update second vector based on ID
+        let second_vec = supply.get_mut(&instruction.2).unwrap();
+        second_vec.extend(vec_elements);
+    }
+
+    println!("Solution Second Part: ");
     for (k, v) in supply.iter().sorted_by_key(|x| x.0) {
         println!("{:?} => {:?}", k, v);
     }
@@ -82,6 +98,7 @@ fn main() {
     let lines: Vec<&str> = contents.split('\n').collect();
     let data: Vec<&str> = lines[0..8].to_vec();
     let instructions: Vec<&str> = lines[10..].to_vec();
+    let instructions2: Vec<&str> = lines[10..].to_vec();
     let mut csv_data: Vec<String> = Vec::new();
 
     // LMAO 💀 💀 💀
@@ -98,8 +115,15 @@ fn main() {
     let rdr = ReaderBuilder::new()
         .has_headers(false)
         .from_reader(string_from_vec.as_bytes());
+    let rdr2 = ReaderBuilder::new()
+        .has_headers(false)
+        .from_reader(string_from_vec.as_bytes());
 
     let supply_data: HashMap<usize, Vec<String>> = prepare_data(rdr);
     let supply_instructions = prepare_instructions(instructions);
-    arrange_supply(supply_instructions, supply_data);
+    let supply_instructions2 = prepare_instructions(instructions2);
+    let supply_data2: HashMap<usize, Vec<String>> = prepare_data(rdr2);
+
+    arrange_supply_first_part(supply_instructions, supply_data);
+    arrange_supply_second_part(supply_instructions2, supply_data2);
 }
