@@ -47,16 +47,15 @@ fn prepare_instructions(instructions: Vec<&str>) -> Vec<(usize,usize,usize)>{
 }
 
 fn arrange_supply(instructions: Vec<(usize, usize, usize)>, mut supply: HashMap<usize, Vec<String>>)  {
-
     for instruction in instructions {
         // Take first vector from hashmap (based on instruction id)
-        let mut first_vec = supply.get_mut(&instruction.1).unwrap();
+        let first_vec = supply.get_mut(&instruction.1).unwrap();
         // Take items from that vector and reverse
         let mut vec_elements: Vec<String> = first_vec.drain(first_vec.len() - instruction.0..).collect();
         vec_elements.reverse();
 
         // Update second vector based on ID
-        let mut second_vec = supply.get_mut(&instruction.2).unwrap();
+        let second_vec = supply.get_mut(&instruction.2).unwrap();
         second_vec.extend(vec_elements);
     }
 
@@ -100,7 +99,7 @@ fn main() {
         .has_headers(false)
         .from_reader(string_from_vec.as_bytes());
 
-    let mut supply_data: HashMap<usize, Vec<String>> = prepare_data(rdr);
+    let supply_data: HashMap<usize, Vec<String>> = prepare_data(rdr);
     let supply_instructions = prepare_instructions(instructions);
     arrange_supply(supply_instructions, supply_data);
 }
